@@ -7,15 +7,19 @@ const router = Router();
 router.get('/', async (req, res) => {
   const query = getQueryParams(req.query);
 
-  const { data: currencies } = await getCurrencies(query);
+  const { data } = await getCurrencies(query);
+
+  const biggestMovers = data.sort((a, b) => (
+    Math.abs(b.quote.USD.percent_change_24h) - Math.abs(a.quote.USD.percent_change_24h)
+  ));
 
   res.json({
     ...query,
-    currencies,
+    biggestMovers,
   });
 });
 
 module.exports = {
   router,
-  path: '/currencies',
+  path: '/biggest-movers',
 };
